@@ -41,17 +41,17 @@ def sign_up_menu():
     print("********************************************************")
     print("Please enter proper information")
     while True:
+        login_id = input("ID: ")
+        login_password = input("Password: ")
+        last_name = input("Last Name: ")
         try:
             student = input("Are you EOU student? [yes/no]: ").lower()
-            login_id = input("ID: ")
-            login_password = input("Password: ")
-            last_name = input("Last Name: ")
 
             # for EOU Student
             if student == "yes":
                 regex = '^[a-z0-9]+[\._]?[a-z0-9]+[@]+eou.edu.au$'
                 while True:
-                    eou_email = str(input("EOU email: "))
+                    eou_email = str(input("EOU email(***@eou.edu.au): "))
                     if re.search(regex, eou_email):
                         proxy.sign_up_eou(login_id, login_password, last_name, eou_email)
                         break
@@ -71,7 +71,7 @@ def sign_up_menu():
                 print("Enter the unit ID and the mark")
                 while True:
                     try:
-                        units = int(input("How many units did you enrol?: "))
+                        units = int(input("How many units did you enrol? (12 ~ 30): "))
                         list_id = []
                         list_mark = []
                         if 12 <= units <= 30:
@@ -103,6 +103,10 @@ def sign_up_menu():
                 print("You are signed up now.")
                 print("")
                 break
+            else:
+                print("")
+                print("Please enter 'yes' or 'no'")
+                print("")
         except TypeError as e:
             print("")
             print("Please enter yes or no -> ", e)

@@ -83,12 +83,16 @@ def authenticate_login(login_id, login_pw):
     # get user id from db
     c.execute("SELECT userId FROM students WHERE userId=?", (login_id,))
     tup1 = c.fetchone()
-    check_id = ''.join(tup1)
+    check_id = None
+    if tup1 is not None:
+        check_id = ''.join(tup1)
 
     # get user password from db
     c.execute("SELECT password FROM students WHERE userId=?", (login_id,))
     tup2 = c.fetchone()
-    check_password = ''.join(tup2)
+    check_password = None
+    if tup2 is not None:
+        check_password = ''.join(tup2)
 
     # compare with data from client and data from db
     if login_id == check_id and login_pw == check_password:
