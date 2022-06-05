@@ -3,7 +3,7 @@ from xmlrpc.client import ServerProxy
 # Connect from the server
 proxy = ServerProxy('http://localhost:9999')
 
-# Variables
+# Components
 login_id = None
 
 
@@ -38,21 +38,22 @@ def sign_up_menu():
     print("")
     print("********************************************************")
     print("Please enter proper information")
-    login_id = input("ID: ")
-    login_password = input("Password: ")
-    last_name = input("Last Name: ")
     while True:
         try:
             student = input("Are you EOU student? [yes/no]: ").lower()
+            login_id = input("ID: ")
+            login_password = input("Password: ")
+            last_name = input("Last Name: ")
             if student == "yes":
-                student_id = input("EOU Student ID: ")
                 eou_email = input("EOU email: ")
+                proxy.sign_up_eou(login_id, login_password, last_name, eou_email)
                 print("")
                 print("Thank you for inputting your information.")
                 print("You are signed up now.")
                 print("")
                 break
             elif student == "no":
+                proxy.sign_up(login_id, login_password, last_name)
                 print("Enter the unit ID and the mark")
                 while True:
                     try:
@@ -61,10 +62,19 @@ def sign_up_menu():
                         list_mark = []
                         if 12 <= units <= 30:
                             for i in range(units):
-                                list_id.append(input(f"[{i+1}] ID: "))
-                                mark = int(input(f"[{i + 1}] Mark: "))
-                                if 0 <= mark <= 100:
-                                    list_mark.append(mark)
+                                list_id.append(input(f"[{i+1}] ID: ").upper())
+                                while True:
+                                    try:
+                                        mark = int(input(f"[{i + 1}] Mark (0 ~ 100): "))
+                                        if 0 <= mark <= 100:
+                                            list_mark.append(mark)
+                                            break
+                                    except ValueError as e:
+                                        print("")
+                                        print(f"Please enter a number between 0 ~ 100 -> {e}")
+                                        print("")
+                            statement = proxy.manual_add(list_id, list_mark, login_id)
+                            print(statement)
                             break
                     except ValueError as e:
                         print("")
@@ -77,7 +87,7 @@ def sign_up_menu():
                 break
         except TypeError as e:
             print("")
-            print("Please enter yes or no")
+            print("Please enter yes or no", e)
             print("")
 
 
