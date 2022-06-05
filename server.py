@@ -63,6 +63,7 @@ class ServerThread(threading.Thread):
         self.local_server.register_function(best_mark)
         self.local_server.register_function(best_mark_avg)
         self.local_server.register_function(evaluation_criteria)
+        self.local_server.register_function(single_score)
 
     # server continuously runs unless interference
     def run(self):
@@ -210,6 +211,11 @@ def evaluation_criteria(login_id):
         statement = f"{login_id}, {avg}, DOES NOT QUALIFY FOR HONORS STUDY!"
         print(f"[{datetime.datetime.now()}] -- [SEND] Get Evaluation Criteria -> {login_id}")
         return statement
+
+
+def single_score(login_id, unit_id):
+    c.execute("SELECT unitMark FROM units WHERE userId=? and unitId=?", (login_id, unit_id,))
+    return c.fetchone()
 
 
 # Server start

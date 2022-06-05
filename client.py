@@ -161,7 +161,8 @@ def main_menu():
         print("2. Course Average")
         print("3. Best 8 marks and Average")
         print("4. Honors Evaluation")
-        print("5. Logout")
+        print("5. Single unit score")
+        print("6. Logout")
         print("")
         try:
             answer = int(input("Menu: "))
@@ -174,7 +175,10 @@ def main_menu():
                 best_mark_avg(login_id)
             elif answer == 4:
                 evaluation_criteria(login_id)
-            elif answer == 5:  # Exit to first menu
+            elif answer == 5:
+                unit_id = str(input("Unit ID: ").upper())
+                single_score(login_id, unit_id)
+            elif answer == 6:  # Exit to first menu
                 proxy.alert(login_id)
                 break
             else:
@@ -215,6 +219,11 @@ def best_mark_avg(login_id):
 def evaluation_criteria(login_id):
     evaluation = proxy.evaluation_criteria(login_id)
     print(evaluation)
+
+
+def single_score(login_id, unit_id):
+    score = proxy.single_score(login_id, unit_id)
+    print(f"The {unit_id.upper()} score: ", score)
 
 
 # client starts
