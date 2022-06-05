@@ -4,10 +4,11 @@ from xmlrpc.client import ServerProxy
 proxy = ServerProxy('http://localhost:9999')
 
 # Variables
-
+login_id = None
 
 def first_menu():
     while True:
+        print("")
         print("********************************************************")
         print("Welcome to Honor Enrolment Pre-assessment System (HEPaS)")
         print("1. Sign up")
@@ -33,6 +34,7 @@ def first_menu():
 
 
 def sign_up_menu():
+    print("")
     print("********************************************************")
     print("Please enter proper information")
     login_id = input("ID: ")
@@ -78,9 +80,10 @@ def sign_up_menu():
             print("")
 
 
-
 def login_menu():
     while True:
+        global login_id
+        print("")
         print("********************************************************")
         print("Please login to access the system")
         print("If you want to exit, Please enter 'exit'")
@@ -105,8 +108,45 @@ def login_token(token):
 
 
 def main_menu():
-    print("********************************************************")
-    print("Welcome to ")
+    global login_id
+    while True:
+        print("")
+        print("********************************************************")
+        print("Welcome to HEPaS Unit inquiry")
+        print("********************************************************")
+        print("1. Individual Scores")
+        print("2. Course Average")
+        print("3. Best 8 marks and Average")
+        print("4. UPDATE")
+        print("5. Logout")
+        print("")
+        try:
+            answer = int(input("Menu: "))
+            if answer == 1:
+                individual_score(login_id)
+            elif answer == 2:
+                average_mark(login_id)
+            elif answer == 3:
+                print("Work")
+            elif answer == 4:
+                print("Work")
+            elif answer == 5:
+                break
+            else:
+                print("Please Select proper menu number 1 ~ 5")
+        except ValueError as e:
+            print("Please Select proper menu number 1 ~ 5 -> ", e)
+
+
+def individual_score(login_id):
+    row_list = proxy.inquiry_mark(login_id)
+    for data in row_list:
+        print(data)
+
+
+def average_mark(login_id):
+    average = proxy.average_mark(login_id)
+    print("The Course Average: ", average)
 
 
 if __name__ == '__main__':
