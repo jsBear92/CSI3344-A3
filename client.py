@@ -1,3 +1,4 @@
+import re
 from xmlrpc.client import ServerProxy
 
 
@@ -48,8 +49,14 @@ def sign_up_menu():
 
             # for EOU Student
             if student == "yes":
-                eou_email = input("EOU email: ")
-                proxy.sign_up_eou(login_id, login_password, last_name, eou_email)
+                regex = '^[a-z0-9]+[\._]?[a-z0-9]+[@]+eou.edu.au$'
+                while True:
+                    eou_email = str(input("EOU email: "))
+                    if re.search(regex, eou_email):
+                        proxy.sign_up_eou(login_id, login_password, last_name, eou_email)
+                        break
+                    else:
+                        print("Please enter proper EOU email address.")
                 print("")
                 print("Thank you for inputting your information.")
                 print("You are signed up now.")
