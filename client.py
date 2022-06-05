@@ -3,10 +3,11 @@ from xmlrpc.client import ServerProxy
 # Connect from the server
 proxy = ServerProxy('http://localhost:9999')
 
-# Components
+# global variable for sending login id information to server
 login_id = None
 
 
+# First menu (no Login status)
 def first_menu():
     while True:
         print("")
@@ -34,6 +35,7 @@ def first_menu():
             print("")
 
 
+# sign up menu
 def sign_up_menu():
     print("")
     print("********************************************************")
@@ -44,6 +46,8 @@ def sign_up_menu():
             login_id = input("ID: ")
             login_password = input("Password: ")
             last_name = input("Last Name: ")
+
+            # for EOU Student
             if student == "yes":
                 eou_email = input("EOU email: ")
                 proxy.sign_up_eou(login_id, login_password, last_name, eou_email)
@@ -52,7 +56,11 @@ def sign_up_menu():
                 print("You are signed up now.")
                 print("")
                 break
+
+            # for Non-EOU Student
             elif student == "no":
+
+                # give student information first to the server
                 proxy.sign_up(login_id, login_password, last_name)
                 print("Enter the unit ID and the mark")
                 while True:
@@ -62,6 +70,8 @@ def sign_up_menu():
                         list_mark = []
                         if 12 <= units <= 30:
                             for i in range(units):
+
+                                # unit ID is being converted to upper case
                                 list_id.append(input(f"[{i+1}] ID: ").upper())
                                 while True:
                                     try:
@@ -73,6 +83,8 @@ def sign_up_menu():
                                         print("")
                                         print(f"Please enter a number between 0 ~ 100 -> {e}")
                                         print("")
+
+                            # send unit information of Non-EOU student to the server
                             statement = proxy.manual_add(list_id, list_mark, login_id)
                             print(statement)
                             break
@@ -91,6 +103,7 @@ def sign_up_menu():
             print("")
 
 
+# Login menu
 def login_menu():
     while True:
         global login_id
@@ -99,12 +112,18 @@ def login_menu():
         print("Please login to access the system")
         print("If you want to exit, Please enter 'exit'")
         login_id = input("ID: ").lower()
+
+        # exit to first menu
         if login_id == "exit":
             break
         else:
             login_password = input("Password: ")
+
+            # send user id and password to the server to check information is in the db
             if login_token(proxy.authorize_login(login_id, login_password)):
                 print("You are successfully logged")
+
+                # go to main menu after success login process
                 main_menu()
                 break
             else:
@@ -113,12 +132,15 @@ def login_menu():
 
 def login_token(token):
     if token:
-        return True
+        return True  # login information matches the db
     else:
-        return False
+        return False  # login information doesn't match the db
 
 
+# main menu after success login process
 def main_menu():
+
+    # get this data for global variables for getting unit data
     global login_id
     while True:
         print("")
@@ -142,7 +164,7 @@ def main_menu():
                 best_mark_avg(login_id)
             elif answer == 4:
                 evaluation_criteria(login_id)
-            elif answer == 5:
+            elif answer == 5:  # Exit to first menu
                 break
             else:
                 print("Please Select proper menu number 1 ~ 5")
@@ -152,8 +174,11 @@ def main_menu():
 
 def individual_score(login_id):
     row_list = proxy.inquiry_mark(login_id)
+    i = 1
+    # ex) 1. ['CSP1234', 65.0]
     for data in row_list:
-        print(data)
+        print(f"{i}.", data)
+        i += 1
 
 
 def average_mark(login_id):
@@ -164,7 +189,8 @@ def average_mark(login_id):
 def best_mark(login_id):
     best = proxy.best_mark(login_id)
     print("The best 8 marks")
-    i = 0
+    i = 1
+    # ex) 1. ['CSI1234', 86.0]
     for data in best:
         print(f"{i}.", data)
         i += 1
@@ -180,6 +206,7 @@ def evaluation_criteria(login_id):
     print(evaluation)
 
 
+# application starts
 if __name__ == '__main__':
     first_menu()
 
