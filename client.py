@@ -2,6 +2,12 @@ import re
 from xmlrpc.client import ServerProxy
 
 
+class Error(Exception):
+    pass
+
+
+class OutOfRangeError(Error):
+    pass
 
 # global variable for sending login id information to server
 login_id = None
@@ -35,15 +41,28 @@ def first_menu():
             print("")
 
 
+# Client side input validation
+# We use 36 as max length because of the common UUID length
+def prompt_user(input_type):
+    try:
+        data = input("Enter " + input_type + ": ")
+        if len(data) <= 0 or len(data) > 36:
+            raise OutOfRangeError
+    except OutOfRangeError:
+        print("Out of range " + input_type + "! Please enter valid non-empty " + input_type + " with length less than 36.")
+        prompt_user(input_type)
+    return data
+
+
 # sign up menu
 def sign_up_menu():
     print("")
     print("********************************************************")
     print("Please enter proper information")
     while True:
-        login_id = input("ID: ")
-        login_password = input("Password: ")
-        last_name = input("Last Name: ")
+        login_id = prompt_user("ID")
+        login_password = prompt_user("Password")
+        last_name = prompt_user("Last Name")
         try:
             student = input("Are you EOU student? [yes/no]: ").lower()
 
