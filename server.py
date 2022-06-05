@@ -53,7 +53,7 @@ class ServerThread(threading.Thread):
         print(f"[{datetime.datetime.now()}] -- [SERVER] Server is listening on port 9999")
 
         # register functions into server.
-        self.local_server.register_function(authorize_login)
+        self.local_server.register_function(authenticate_login)
         self.local_server.register_function(alert)
         self.local_server.register_function(sign_up_eou)
         self.local_server.register_function(sign_up)
@@ -79,7 +79,7 @@ def alert(login_id):
     print(f"[{datetime.datetime.now()}] -- [AUTH] {login_id} is logout")
 
 
-def authorize_login(login_id, login_pw):
+def authenticate_login(login_id, login_pw):
     # get user id from db
     c.execute("SELECT userId FROM students WHERE userId=?", (login_id,))
     tup1 = c.fetchone()

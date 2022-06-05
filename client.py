@@ -126,7 +126,7 @@ def login_menu():
             login_password = input("Password: ")
 
             # send user id and password to the server to check information is in the db
-            if login_token(proxy.authorize_login(login_id, login_password)):
+            if login_token(proxy.authenticate_login(login_id, login_password)):
                 print("You are successfully logged")
 
                 # go to main menu after success login process
