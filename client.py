@@ -6,6 +6,7 @@ proxy = ServerProxy('http://localhost:9999')
 # Variables
 login_id = None
 
+
 def first_menu():
     while True:
         print("")
@@ -117,7 +118,7 @@ def main_menu():
         print("1. Individual Scores")
         print("2. Course Average")
         print("3. Best 8 marks and Average")
-        print("4. UPDATE")
+        print("4. Honors Evaluation")
         print("5. Logout")
         print("")
         try:
@@ -127,9 +128,10 @@ def main_menu():
             elif answer == 2:
                 average_mark(login_id)
             elif answer == 3:
-                print("Work")
+                best_mark(login_id)
+                best_mark_avg(login_id)
             elif answer == 4:
-                print("Work")
+                evaluation_criteria(login_id)
             elif answer == 5:
                 break
             else:
@@ -147,6 +149,25 @@ def individual_score(login_id):
 def average_mark(login_id):
     average = proxy.average_mark(login_id)
     print("The Course Average: ", average)
+
+
+def best_mark(login_id):
+    best = proxy.best_mark(login_id)
+    print("The best 8 marks")
+    i = 0
+    for data in best:
+        print(f"{i}.", data)
+        i += 1
+
+
+def best_mark_avg(login_id):
+    best_avg = proxy.best_mark_avg(login_id)
+    print("The average of best 8 marks: ", best_avg)
+
+
+def evaluation_criteria(login_id):
+    evaluation = proxy.evaluation_criteria(login_id)
+    print(evaluation)
 
 
 if __name__ == '__main__':
