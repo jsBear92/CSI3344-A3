@@ -17,26 +17,32 @@ UNITID = ['SCI1125', 'CSP1150', 'MAT1252', 'CSI1241', 'CSG1105', 'CSI1101', 'ENS
 conn = sqlite3.connect('hepas.db', isolation_level=None, check_same_thread=False)
 c = conn.cursor()
 
+
 # Delete tables if the tables exists in the database
-c.execute("DROP TABLE IF EXISTS students")
-c.execute("DROP TABLE IF EXISTS units")
+def drop_table():
+    c.execute("DROP TABLE IF EXISTS students")
+    c.execute("DROP TABLE IF EXISTS units")
+
 
 # Create table
-c.execute(
-    "CREATE TABLE IF NOT EXISTS students (id integer NOT NULL PRIMARY KEY AUTOINCREMENT, userId text NOT NULL, password text "
-    "NOT NULL, lastName text NOT NULL, email text)")
-c.execute(
-    "CREATE TABLE IF NOT EXISTS units (id integer NOT NULL PRIMARY KEY AUTOINCREMENT, unitId text NOT NULL, unitMark real NOT "
-    "NULL, userId text, FOREIGN KEY(userId) REFERENCES students(userId))")
+def create_table():
+    c.execute(
+        "CREATE TABLE IF NOT EXISTS students (id integer NOT NULL PRIMARY KEY AUTOINCREMENT, userId text NOT NULL, password text "
+        "NOT NULL, lastName text NOT NULL, email text)")
+    c.execute(
+        "CREATE TABLE IF NOT EXISTS units (id integer NOT NULL PRIMARY KEY AUTOINCREMENT, unitId text NOT NULL, unitMark real NOT "
+        "NULL, userId text, FOREIGN KEY(userId) REFERENCES students(userId))")
+
 
 # Initiate DB
-c.execute(
-    "INSERT INTO students(userId, password, lastName, email) VALUES ('abc123', 'qwe123', 'James', 'james123@eou.edu.au')")
-c.execute("INSERT INTO units(unitId, unitMark, userId) VALUES ('SCI1125', 85, 'abc123'), ('CSP1150', 50, 'abc123'),"
-          "('MAT1252', 78, 'abc123'), ('CSI1241', 73, 'abc123'), ('CSG1105', 90, 'abc123'),"
-          "('CSI1101', 45, 'abc123'), ('ENS1161', 95, 'abc123'), ('CSG1207', 65, 'abc123'),"
-          "('CSP2348', 58, 'abc123'), ('CSG2341', 92, 'abc123'), ('CSG2344', 87, 'abc123'),"
-          "('CSI3344', 72, 'abc123')")
+def inser_values():
+    c.execute(
+        "INSERT INTO students(userId, password, lastName, email) VALUES ('abc123', 'qwe123', 'James', 'james123@eou.edu.au')")
+    c.execute("INSERT INTO units(unitId, unitMark, userId) VALUES ('SCI1125', 85, 'abc123'), ('CSP1150', 50, 'abc123'),"
+              "('MAT1252', 78, 'abc123'), ('CSI1241', 73, 'abc123'), ('CSG1105', 90, 'abc123'),"
+              "('CSI1101', 45, 'abc123'), ('ENS1161', 95, 'abc123'), ('CSG1207', 65, 'abc123'),"
+              "('CSP2348', 58, 'abc123'), ('CSG2341', 92, 'abc123'), ('CSG2344', 87, 'abc123'),"
+              "('CSI3344', 72, 'abc123')")
 
 
 # Thread
@@ -48,6 +54,7 @@ class ServerThread(threading.Thread):
 
         # register functions into server.
         self.local_server.register_function(authorize_login)
+        self.local_server.register_function(alert)
         self.local_server.register_function(sign_up_eou)
         self.local_server.register_function(sign_up)
         self.local_server.register_function(manual_add)
@@ -66,6 +73,10 @@ class ServerThread(threading.Thread):
 Functions get parameters from the clients.
 Every single interaction has timestamp 
 '''
+
+
+def alert(login_id):
+    print(f"[{datetime.datetime.now()}] -- [AUTH] {login_id} is logout")
 
 
 def authorize_login(login_id, login_pw):
@@ -203,5 +214,8 @@ if __name__ == '__main__':
     try:
         print(f"[{datetime.datetime.now()}] -- [HELP] Use Control+c to exit")
         server.start()
+        drop_table()
+        create_table()
+        inser_values()
     except KeyboardInterrupt:
         print(f"[{datetime.datetime.now()}] -- [SERVER] Server is closing")

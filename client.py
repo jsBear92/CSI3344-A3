@@ -1,7 +1,6 @@
 from xmlrpc.client import ServerProxy
 
-# Connect from the server
-proxy = ServerProxy('http://localhost:9999')
+
 
 # global variable for sending login id information to server
 login_id = None
@@ -99,7 +98,7 @@ def sign_up_menu():
                 break
         except TypeError as e:
             print("")
-            print("Please enter yes or no", e)
+            print("Please enter yes or no -> ", e)
             print("")
 
 
@@ -165,6 +164,7 @@ def main_menu():
             elif answer == 4:
                 evaluation_criteria(login_id)
             elif answer == 5:  # Exit to first menu
+                proxy.alert(login_id)
                 break
             else:
                 print("Please Select proper menu number 1 ~ 5")
@@ -206,8 +206,12 @@ def evaluation_criteria(login_id):
     print(evaluation)
 
 
-# application starts
+# client starts
 if __name__ == '__main__':
+    # Connect from the server
+    proxy = ServerProxy('http://localhost:9999')
+
+    # Enter to First menu
     first_menu()
 
 
