@@ -70,7 +70,7 @@ def sign_up_menu():
             if student == "yes":
                 regex = '^[a-z0-9]+[\._]?[a-z0-9]+[@]+eou.edu.au$'
                 while True:
-                    eou_email = str(input("EOU email(***@eou.edu.au): "))
+                    eou_email = prompt_user("EOU email(***@eou.edu.au)")
                     if re.search(regex, eou_email):
                         proxy.sign_up_eou(login_id, login_password, last_name, eou_email)
                         break
